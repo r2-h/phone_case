@@ -9,7 +9,7 @@ import Link from "next/link"
 
 export default function Home() {
   return (
-    <main className="bg-slate-50">
+    <div className="bg-slate-50">
       <MaxWidthWrapper
         asTag="section"
         className="pb-24 pt-10 sm:pb-32 lg:grid lg:grid-cols-3 lg: gap-x-8 lg:pt-24 lg:pb-52 xl:pt-32"
@@ -216,6 +216,6 @@ export default function Home() {
           </Link>
         </div>
       </MaxWidthWrapper>
-    </main>
+    </div>
   )
 }
