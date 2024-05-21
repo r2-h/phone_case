@@ -1,20 +1,46 @@
 "use client"
+import { useToast } from "@/components/ui/use-toast"
 import { Progress } from "@/components/ui/progress"
+import { useUploadThing } from "@/lib/uploadthing"
 import { cn } from "@/lib/utils"
 import { Image as ImageIcon, Loader2, LucideMousePointerSquareDashed } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
-import Dropzone from "react-dropzone"
+import Dropzone, { FileRejection } from "react-dropzone"
 
 const UploadPage = () => {
   const [isDragOver, setIsDragOver] = useState<boolean>(false)
-  const [uploadProgress, setUploadProgress] = useState<null | number>(null)
+  const [uploadProgress, setUploadProgress] = useState(0)
   const [isPending, startTransition] = useTransition()
 
-  const isUploading = false
+  const router = useRouter()
+  const { toast } = useToast()
 
-  const onDropRejected = () => {}
-  const onDropAccepted = () => {
-    console.log("accepted")
+  const { isUploading, startUpload } = useUploadThing("imageUploader", {
+    onClientUploadComplete: ([data]) => {
+      const configId = data.serverData.configId
+      startTransition(() => {
+        router.push(`/configure/design?id=${configId}`)
+      })
+    },
+    onUploadProgress(newUploadProgress) {
+      setUploadProgress(newUploadProgress)
+    },
+  })
+
+  const onDropRejected = (rejectedFiles: FileRejection[]) => {
+    const [file] = rejectedFiles
+    setIsDragOver(false)
+    toast({
+      title: `${file.file.type} type is not supported`,
+      description: "Please use a PNG, JPG, or JPEG image instead",
+      variant: "destructive",
+    })
+  }
+
+  const onDropAccepted = (acceptedFiles: File[]) => {
+    startUpload(acceptedFiles, { configId: "DD2" })
+    setIsDragOver(false)
   }
 
   return (
@@ -61,7 +87,7 @@ const UploadPage = () => {
             )}
 
             {isPending ? null : <p className="text-xs text-zinc-500 mt-2">PNG, JPG, JPEG</p>}
-          </div>  
+          </div>
         )}
       </Dropzone>
     </div>

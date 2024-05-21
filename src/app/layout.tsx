@@ -1,9 +1,9 @@
+import Footer from "@/components/Footer"
+import { Navbar } from "@/components/Navbar"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import { Navbar } from "@/components/Navbar"
-import { ThemeProvider } from "@/components/ThemeProvider"
-import Footer from "@/components/Footer"
+import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -25,6 +25,7 @@ export default function RootLayout({
           <main className="flex flex-col flex-1 h-full">{children}</main>
           <Footer />
         </div>
+        <Toaster />
       </body>
     </html>
   )
